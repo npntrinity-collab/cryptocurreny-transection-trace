@@ -1,0 +1,20 @@
+.risk-score {
+    font-size: 60px;
+    font-weight: bold;
+}
+
+.risk-level.low { color: #22c55e; }
+.risk-level.medium { color: #facc15; }
+.risk-level.high { 
+    color: #ef4444;
+    text-shadow: 0 0 10px #ef4444;
+}
+
+#riskFlags {
+    list-style: none;
+    padding: 0;
+}
+
+#riskFlags li {
+    margin: 10px 0;
+}

@@ -1,0 +1,43 @@
+.case-panel {
+    display: flex;
+    gap: 20px;
+    padding: 10px 25px;
+    background: #0b1220;
+}
+
+.summary-panel {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    flex: 1;
+    background: #111827;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.graph-section {
+    background: #0b1220;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#graph {
+    height: 550px;
+}
+
+.risk-panel {
+    background: #0b1220;
+    border-radius: 10px;
+    padding: 20px;
+}
