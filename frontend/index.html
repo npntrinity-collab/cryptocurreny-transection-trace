@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Crypto Intelligence Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/risk.css">
+    <link rel="stylesheet" href="css/timeline.css">
+
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">CRYPTO FORENSIC INTELLIGENCE</div>
+
+        <div class="search-box">
+            <input type="text" id="walletInput" placeholder="Enter Wallet Address">
+            <button id="traceBtn">TRACE</button>
+        </div>
+    </div>
+
+    <!-- CASE INFO -->
+    <div class="case-panel">
+        <div>Case ID: <span id="caseId">-</span></div>
+        <div>Input: <span id="caseInput">-</span></div>
+        <div>Status: <span id="caseStatus">-</span></div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="summary-panel">
+
+        <div class="card">
+            <h4>Total Volume</h4>
+            <p id="totalVolume">0</p>
+        </div>
+
+        <div class="card">
+            <h4>Wallets</h4>
+            <p id="walletCount">0</p>
+        </div>
+
+        <div class="card">
+            <h4>Transactions</h4>
+            <p id="txCount">0</p>
+        </div>
+
+        <div class="card">
+            <h4>Suspicious</h4>
+            <p id="suspiciousCount">0</p>
+        </div>
+
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="dashboard">
+
+        <div class="graph-section">
+            <div id="graph"></div>
+        </div>
+
+        <div class="risk-panel">
+            <h2>Risk Analysis</h2>
+            <div id="riskScore" class="risk-score">0</div>
+            <div id="riskLevel" class="risk-level low">LOW</div>
+            <ul id="riskFlags"></ul>
+        </div>
+
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="timeline-section">
+        <h2>Transaction Timeline</h2>
+        <div id="timeline"></div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/graph.js"></script>
+    <script src="js/riskPanel.js"></script>
+    <script src="js/timeline.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

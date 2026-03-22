@@ -1,0 +1,15 @@
+.timeline-section {
+    padding: 25px;
+}
+
+#timeline {
+    display: flex;
+    gap: 15px;
+}
+
+.timeline-card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+    min-width: 200px;
+}
