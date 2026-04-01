@@ -1,43 +1,48 @@
-.case-panel {
-    display: flex;
-    gap: 20px;
-    padding: 10px 25px;
-    background: #0b1220;
-}
-
-.summary-panel {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-}
-
-.card {
-    flex: 1;
-    background: #111827;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-}
-
+/* MAIN GRID */
 .dashboard {
     display: grid;
     grid-template-columns: 3fr 1fr;
     gap: 20px;
-    padding: 20px;
+    margin-top: 20px;
 }
 
+/* GRAPH AREA */
 .graph-section {
-    background: #0b1220;
-    border-radius: 10px;
+    background: #0f172a;
+    border-radius: 12px;
     padding: 10px;
+    height: 500px;
 }
 
+/* GRAPH FULL SIZE */
 #graph {
-    height: 550px;
+    width: 100%;
+    height: 100%;
 }
 
+/* RISK PANEL */
 .risk-panel {
-    background: #0b1220;
-    border-radius: 10px;
+    background: #0f172a;
+    border-radius: 12px;
     padding: 20px;
+}
+
+/* SUMMARY CARDS */
+.summary-panel {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.card {
+    background: #111827;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* TIMELINE */
+.timeline-section {
+    margin-top: 30px;
 }

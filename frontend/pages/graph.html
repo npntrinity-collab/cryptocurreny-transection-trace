@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Graph Analysis</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/risk.css">
+    <link rel="stylesheet" href="../css/timeline.css">
+
+    <!-- Cytoscape -->
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            background: #0b1220;
+            color: white;
+            font-family: Arial;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 220px;
+            background: #0f172a;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .menu-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .menu-item:hover {
+            background: #1e293b;
+        }
+
+        .active {
+            background: #3b82f6;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 20px;
+            width: calc(100% - 220px);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            width: 300px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>BlockForensics</h2>
+
+        <div class="menu-item" onclick="go('dashboard.html')">Dashboard</div>
+
+        <div class="menu-item active">Graph Analysis</div>
+
+        <div class="menu-item" onclick="go('risk.html')">Risk Intelligence</div>
+
+        <div class="menu-item" onclick="go('cases.html')">Cases & Reports</div>
+
+        <div class="menu-item">Monitoring</div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <h2>Graph Analysis</h2>
+
+            <div>
+                <input id="walletInput" placeholder="Enter Wallet Address">
+                <button id="traceBtn">TRACE</button>
+            </div>
+        </div>
+
+        <!-- CASE INFO -->
+        <div class="case-panel">
+            Case ID: <span id="caseId">-</span> |
+            Input: <span id="caseInput">-</span> |
+            Status: <span id="caseStatus">-</span>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="summary-panel">
+            <div class="card">
+                <h4>Total Volume</h4>
+                <p id="totalVolume">0</p>
+            </div>
+            <div class="card">
+                <h4>Wallets</h4>
+                <p id="walletCount">0</p>
+            </div>
+            <div class="card">
+                <h4>Transactions</h4>
+                <p id="txCount">0</p>
+            </div>
+            <div class="card">
+                <h4>Suspicious</h4>
+                <p id="suspiciousCount">0</p>
+            </div>
+        </div>
+
+        <!-- GRAPH + RISK -->
+        <div class="dashboard">
+
+            <div class="graph-section">
+                <div id="graph"></div>
+            </div>
+
+            <div class="risk-panel">
+                <h3>Risk Analysis</h3>
+                <div id="riskScore">0</div>
+                <div id="riskLevel">LOW</div>
+                <ul id="riskFlags"></ul>
+            </div>
+
+        </div>
+
+        <!-- TIMELINE -->
+        <div class="timeline-section">
+            <h3>Transaction Timeline</h3>
+            <div id="timeline"></div>
+        </div>
+
+    </div>
+
+    <!-- JS -->
+    <script src="../js/api.js"></script>
+    <script src="../js/graph.js"></script>
+    <script src="../js/riskPanel.js"></script>
+    <script src="../js/timeline.js"></script>
+
+    <script>
+
+        function go(page) {
+            window.location.href = page;
+        }
+
+        // TRACE BUTTON
+        document.getElementById("traceBtn").addEventListener("click", async () => {
+
+            const wallet = document.getElementById("walletInput").value;
+
+            if (!wallet) {
+                alert("Enter wallet address");
+                return;
+            }
+
+            try {
+                const data = await fetchTraceData(wallet);
+
+                // CASE
+                document.getElementById("caseId").innerText = data.case.id;
+                document.getElementById("caseInput").innerText = data.case.input;
+                document.getElementById("caseStatus").innerText = data.case.status;
+
+                // SUMMARY
+                document.getElementById("totalVolume").innerText = data.summary.totalVolume;
+                document.getElementById("walletCount").innerText = data.summary.wallets;
+                document.getElementById("txCount").innerText = data.summary.transactions;
+                document.getElementById("suspiciousCount").innerText = data.summary.suspicious;
+
+                // MAIN
+                renderGraph(data.graph);
+                renderRisk(data.risk);
+                renderTimeline(data.timeline);
+
+            } catch (err) {
+                console.error(err);
+                alert("Backend not connected");
+            }
+
+        });
+    </script>
+
+</body>
+
+</html>
