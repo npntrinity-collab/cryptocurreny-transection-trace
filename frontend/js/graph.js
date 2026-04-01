@@ -1,44 +1,41 @@
 function renderGraph(graphData) {
-  document.getElementById("graph").innerHTML = "";
-
-  cytoscape({
+  const cy = cytoscape({
     container: document.getElementById("graph"),
 
-    elements: [...graphData.nodes, ...graphData.edges],
+    elements: graphData,
 
     style: [
       {
         selector: "node",
         style: {
+          "background-color": "blue",
           label: "data(label)",
-          "background-color": "#3b82f6",
-          color: "#fff",
+          color: "white",
+          "font-size": "12px",
           "text-valign": "center",
+          "text-halign": "center",
         },
-      },
-      {
-        selector: 'node[type="exchange"]',
-        style: { "background-color": "#22c55e" },
-      },
-      {
-        selector: 'node[type="darknet"]',
-        style: { "background-color": "#ef4444" },
-      },
-      {
-        selector: 'node[type="mixer"]',
-        style: { "background-color": "#f59e0b" },
       },
       {
         selector: "edge",
         style: {
-          label: "data(label)",
-          "line-color": "#64748b",
+          width: 2,
+          "line-color": "#888",
           "target-arrow-shape": "triangle",
-          "target-arrow-color": "#64748b",
+          "target-arrow-color": "#888",
+          "curve-style": "bezier",
+          label: "data(label)",
+          "font-size": "10px",
+          color: "#ccc",
         },
       },
     ],
 
-    layout: { name: "cose", animate: true },
+    layout: {
+      name: "cose",
+      animate: true,
+      fit: true,
+      padding: 30,
+    },
   });
 }

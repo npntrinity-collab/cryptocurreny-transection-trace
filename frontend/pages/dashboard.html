@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #0b1220;
+            color: white;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 220px;
+            background: #0f172a;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+        }
+
+        .menu-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .menu-item:hover {
+            background: #1e293b;
+        }
+
+        .active {
+            background: #3b82f6;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+        }
+
+        .card {
+            flex: 1;
+            background: #111827;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>BlockForensics</h2>
+
+        <div class="menu-item active">Dashboard</div>
+
+        <div class="menu-item" onclick="go('graph.html')">
+            Graph Analysis
+        </div>
+
+        <div class="menu-item" onclick="go('risk.html')">
+            Risk Intelligence
+        </div>
+
+        <div class="menu-item" onclick="go('cases.html')">
+            Cases & Reports
+        </div>
+
+        <div class="menu-item">
+            Monitoring
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <h1>Dashboard</h1>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Total Cases</h3>
+                <p>12</p>
+            </div>
+
+            <div class="card">
+                <h3>High Risk</h3>
+                <p>5</p>
+            </div>
+
+            <div class="card">
+                <h3>Transactions</h3>
+                <p>120</p>
+            </div>
+
+            <div class="card">
+                <h3>Wallets</h3>
+                <p>30</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function go(page) {
+            window.location.href = page;
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+    <style>
+        body {
+            background: #0f172a;
+            color: white;
+            font-family: Arial;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .box {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 10px;
+            width: 300px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h2>Login</h2>
+
+        <input id="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Password">
+
+        <button onclick="login()">Login</button>
+
+        <p>Don't have account? <a href="signup.html">Signup</a></p>
+    </div>
+
+    <script>
+        async function login() {
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            const res = await fetch("http://127.0.0.1:5000/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                localStorage.setItem("user", email);
+                window.location.href = "./dashboard.html";
+            } else {
+                alert("Login failed");
+            }
+        }
+    </script>
+
+</body>
+
+</html>
