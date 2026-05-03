@@ -8,7 +8,11 @@ function renderGraph(graphData) {
       {
         selector: "node",
         style: {
-          "background-color": "blue",
+          "background-color": "#3b82f6",
+          "border-color": "#1e293b",
+          "border-width": 2,
+          width: 40,
+          height: 40,
           label: "data(label)",
           color: "white",
           "font-size": "12px",

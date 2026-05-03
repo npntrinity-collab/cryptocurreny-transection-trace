@@ -1,16 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BlockForensics</title>
 
     <style>
-        body {
+        * {
             margin: 0;
-            font-family: Arial;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
             background: #0b1220;
             color: white;
-            display: flex;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
         }
 
         /* SIDEBAR */
@@ -19,44 +27,163 @@
             background: #0f172a;
             height: 100vh;
             padding: 20px;
+            border-right: 1px solid #1e293b;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
         }
 
         .sidebar h2 {
+            font-size: 1.5rem;
             margin-bottom: 30px;
+            color: #3b82f6;
         }
 
         .menu-item {
-            padding: 12px;
+            padding: 12px 16px;
             margin-bottom: 10px;
             cursor: pointer;
             border-radius: 5px;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            color: white;
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
         }
 
         .menu-item:hover {
             background: #1e293b;
+            transform: translateX(5px);
         }
 
-        .active {
+        .menu-item.active {
             background: #3b82f6;
+            font-weight: bold;
         }
 
         /* MAIN */
         .main {
             flex: 1;
-            padding: 20px;
+            margin-left: 220px;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .main h1 {
+            font-size: 2rem;
+            margin-bottom: 30px;
         }
 
         .cards {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
         }
 
         .card {
-            flex: 1;
             background: #111827;
-            padding: 20px;
+            padding: 25px;
             border-radius: 10px;
             text-align: center;
+            border: 1px solid #1e293b;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+        }
+
+        .card h3 {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        .loading,
+        .error {
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .loading {
+            background: #1e3a5f;
+            color: #3b82f6;
+        }
+
+        .error {
+            background: #5f1f1f;
+            color: #ef4444;
+        }
+
+        .error code {
+            background: #1e1e1e;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #fbbf24;
+            font-size: 0.85rem;
+        }
+
+        .error a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+
+        .error a:hover {
+            color: #60a5fa;
+        }
+
+        .spinner {
+            border: 3px solid #1e293b;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 480px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                min-height: 120px;
+            }
+
+            .card p {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -64,61 +191,204 @@
 <body>
 
     <!-- SIDEBAR -->
-    <div class="sidebar">
+    <nav class="sidebar" role="navigation" aria-label="Main Navigation">
         <h2>BlockForensics</h2>
 
-        <div class="menu-item active">Dashboard</div>
+        <button class="menu-item active" data-page="dashboard.html" aria-current="page">Dashboard</button>
+        <button class="menu-item" data-page="graph.html">Graph Analysis</button>
+        <button class="menu-item" data-page="risk.html">Risk Intelligence</button>
+        <button class="menu-item" data-page="cases.html">Cases & Reports</button>
+    </nav>
 
-        <div class="menu-item" onclick="go('graph.html')">
-            Graph Analysis
-        </div>
-
-        <div class="menu-item" onclick="go('risk.html')">
-            Risk Intelligence
-        </div>
-
-        <div class="menu-item" onclick="go('cases.html')">
-            Cases & Reports
-        </div>
-
-        <div class="menu-item">
-            Monitoring
-        </div>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div class="main">
-
+    <!-- MAIN -->
+    <main class="main">
         <h1>Dashboard</h1>
 
-        <div class="cards">
-            <div class="card">
-                <h3>Total Cases</h3>
-                <p>12</p>
-            </div>
+        <div id="content">
+            <div class="cards">
+                <div class="card">
+                    <h3>Total Cases</h3>
+                    <p id="cases">-</p>
+                </div>
 
-            <div class="card">
-                <h3>High Risk</h3>
-                <p>5</p>
-            </div>
+                <div class="card">
+                    <h3>High Risk</h3>
+                    <p id="risk">-</p>
+                </div>
 
-            <div class="card">
-                <h3>Transactions</h3>
-                <p>120</p>
-            </div>
+                <div class="card">
+                    <h3>Transactions</h3>
+                    <p id="tx">-</p>
+                </div>
 
-            <div class="card">
-                <h3>Wallets</h3>
-                <p>30</p>
+                <div class="card">
+                    <h3>Wallets</h3>
+                    <p id="wallets">-</p>
+                </div>
             </div>
         </div>
 
-    </div>
+        <div id="status" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Loading dashboard data...</p>
+        </div>
+    </main>
 
     <script>
-        function go(page) {
-            window.location.href = page;
+        // Configuration
+        const API_BASE_URL = (window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
+            ? window.location.origin
+            : 'http://localhost:5000';
+
+        const API_ENDPOINT = '/api/dashboard';
+        const RETRY_ATTEMPTS = 3;
+        const RETRY_DELAY = 1000; // ms
+
+        console.log('[Dashboard Config] API_BASE_URL:', API_BASE_URL);
+        console.log('[Dashboard Config] API_ENDPOINT:', API_ENDPOINT);
+        console.log('[Dashboard Config] Frontend Origin:', window.location.origin);
+
+        // Health check function
+        async function checkBackendHealth() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log('[Backend Health] ✅ Backend is RUNNING:', data);
+                    return true;
+                } else {
+                    console.warn('[Backend Health] ⚠️ Backend responded with status:', res.status);
+                    return false;
+                }
+            } catch (err) {
+                console.error('[Backend Health] ❌ Backend is NOT accessible:', err.message);
+                return false;
+            }
         }
+
+        // Navigation Setup
+        document.querySelectorAll('.menu-item').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const page = this.getAttribute('data-page');
+                const currentPage = window.location.pathname.split('/').pop();
+                if (page && page !== currentPage) {
+                    window.location.href = page;
+                }
+            });
+        });
+
+        // Load dashboard data from backend with retry logic
+        async function loadDashboard(attempt = 1) {
+            const statusDiv = document.getElementById('status');
+            const contentDiv = document.getElementById('content');
+
+            try {
+                showLoading(true);
+
+                const url = `${API_BASE_URL}${API_ENDPOINT}`;
+                console.log(`[Dashboard] Attempt ${attempt}/${RETRY_ATTEMPTS} - Fetching from: ${url}`);
+
+                const res = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+
+                // Check if response is successful
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+
+                const data = await res.json();
+
+                // Validate response data
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid response format');
+                }
+
+                // Update UI with data
+                document.getElementById("cases").innerText = data.total_cases || '0';
+                document.getElementById("risk").innerText = data.high_risk || '0';
+                document.getElementById("tx").innerText = data.transactions || '0';
+                document.getElementById("wallets").innerText = data.wallets || '0';
+
+                showLoading(false);
+                console.log('[Dashboard] ✅ Data loaded successfully:', data);
+
+            } catch (err) {
+                console.error(`[Dashboard] ❌ Error (Attempt ${attempt}/${RETRY_ATTEMPTS}):`, err.message);
+
+                // Retry logic
+                if (attempt < RETRY_ATTEMPTS) {
+                    console.log(`[Dashboard] ⏳ Retrying in ${RETRY_DELAY}ms...`);
+                    setTimeout(() => loadDashboard(attempt + 1), RETRY_DELAY);
+                } else {
+                    // Show detailed error after all retries exhausted
+                    const url = `${API_BASE_URL}${API_ENDPOINT}`;
+                    showError(
+                        `<strong>Failed to connect to backend</strong><br>` +
+                        `<small style="color: #94a3b8;">Tried: <code>${url}</code></small><br>` +
+                        `<small style="color: #94a3b8;">Error: ${err.message}</small><br>` +
+                        `<small style="color: #94a3b8;">✓ Ensure backend is running on http://localhost:5000</small><br>` +
+                        `<small style="color: #94a3b8;">✓ Open browser DevTools (F12) → Console to see detailed errors</small>`
+                    );
+                }
+            }
+        }
+
+        // Show/Hide Loading State
+        function showLoading(isLoading) {
+            const statusDiv = document.getElementById('status');
+            const contentDiv = document.getElementById('content');
+
+            if (isLoading) {
+                statusDiv.style.display = 'block';
+                contentDiv.style.opacity = '0.5';
+                contentDiv.style.pointerEvents = 'none';
+            } else {
+                statusDiv.style.display = 'none';
+                contentDiv.style.opacity = '1';
+                contentDiv.style.pointerEvents = 'auto';
+            }
+        }
+
+        // Show Error State
+        function showError(message) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'error';
+            statusDiv.innerHTML = `<p>⚠️ ${message}</p>`;
+            statusDiv.style.display = 'block';
+        }
+
+        // Run on page load
+        window.addEventListener('DOMContentLoaded', async function () {
+            console.log('[Dashboard] 🔍 Checking backend health...');
+            const isHealthy = await checkBackendHealth();
+
+            if (isHealthy) {
+                console.log('[Dashboard] ✅ Backend is healthy, loading dashboard...');
+                loadDashboard();
+            } else {
+                console.log('[Dashboard] ❌ Backend is not responding, will retry...');
+                showError(
+                    `<strong>⚠️ Cannot Connect to Backend</strong><br>` +
+                    `<small style="color: #94a3b8;">Backend URL: <code>${API_BASE_URL}</code></small><br>` +
+                    `<small style="color: #94a3b8; margin-top: 10px; display: block;">📝 Troubleshooting:</small>` +
+                    `<small style="color: #94a3b8;">1. Make sure backend is running: <code>python app.py</code></small><br>` +
+                    `<small style="color: #94a3b8;">2. Backend should start with: <code>🚀 Starting Backend Server on http://0.0.0.0:5000</code></small><br>` +
+                    `<small style="color: #94a3b8;">3. Test backend: Visit <code><a href="${API_BASE_URL}/" target="_blank" style="color: #3b82f6;">http://localhost:5000/</a></code> in new tab</small><br>` +
+                    `<small style="color: #94a3b8;">4. Check browser console (F12) for more details</small>`
+                );
+                // Still try loading after error display
+                setTimeout(() => loadDashboard(), 2000);
+            }
+        });
     </script>
 
 </body>

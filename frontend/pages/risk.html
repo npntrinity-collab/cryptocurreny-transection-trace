@@ -1,12 +1,422 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Risk</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Intelligence - BlockForensics</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            background: #0b1220;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #0f172a;
+            height: 100vh;
+            padding: 20px;
+            border-right: 1px solid #1e293b;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #3b82f6;
+        }
+
+        .menu-item {
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            color: white;
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .menu-item:hover {
+            background: #1e293b;
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            background: #3b82f6;
+            font-weight: bold;
+        }
+
+        .main {
+            flex: 1;
+            margin-left: 220px;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .main h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .topbar .subtitle {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .topbar button {
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #111827;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 140px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .panel h2,
+        .panel h3 {
+            margin-bottom: 15px;
+            color: #f8fafc;
+        }
+
+        .risk-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .risk-chip {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 999px;
+            padding: 10px 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .risk-list {
+            list-style: none;
+            margin-top: 15px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .risk-list li {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .risk-list span {
+            color: #f8fafc;
+        }
+
+        .risk-pill {
+            background: #334155;
+            color: #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+        }
+
+        .timeline {
+            display: grid;
+            gap: 20px;
+        }
+
+        .timeline-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .timeline-card h3 {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .timeline-card p {
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .main {
+                margin-left: 220px;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
 </head>
 
-<body style="background:#0b1220; color:white;">
-    <h1>Risk Intelligence</h1>
+<body>
+    <div class="sidebar">
+        <h2>BlockForensics</h2>
+        <div class="menu-item" onclick="go('dashboard.html')">Dashboard</div>
+        <div class="menu-item" onclick="go('graph.html')">Graph Analysis</div>
+        <div class="menu-item active">Risk Intelligence</div>
+        <div class="menu-item" onclick="go('cases.html')">Cases & Reports</div>
+    </div>
+
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <h1>Risk Intelligence</h1>
+                <div class="subtitle">Monitor suspicious activity and score wallet risk in real time.</div>
+            </div>
+            <button onclick="refreshRiskData()">Refresh Data</button>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Total Risk Alerts</h3>
+                <p id="totalAlerts">28</p>
+            </div>
+            <div class="card">
+                <h3>High Risk Wallets</h3>
+                <p id="highRiskWallets">9</p>
+            </div>
+            <div class="card">
+                <h3>Avg Risk Score</h3>
+                <p id="avgRiskScore">7.4</p>
+            </div>
+            <div class="card">
+                <h3>Flagged Transactions</h3>
+                <p id="flaggedTx">46</p>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <section class="panel">
+                <h2>Risk Insights</h2>
+                <p>Use this section to review the latest risk categories and flagged wallet behavior. The system
+                    highlights wallets with the highest combined risk score.</p>
+
+                <div class="risk-summary" id="topCategories">
+                    <div class="risk-chip">Phishing: 12</div>
+                    <div class="risk-chip">Money Laundering: 8</div>
+                    <div class="risk-chip">Sanctions: 4</div>
+                    <div class="risk-chip">Darknet: 3</div>
+                </div>
+
+                <ul class="risk-list" id="topRiskList">
+                    <li><span>Wallet 0xA1...F7C — Risk Score 9.8</span><span class="risk-pill">High</span></li>
+                    <li><span>Wallet 0xB8...9D2 — Risk Score 8.6</span><span class="risk-pill">High</span></li>
+                    <li><span>Wallet 0xC4...3EA — Risk Score 7.1</span><span class="risk-pill">Medium</span></li>
+                    <li><span>Wallet 0xD5...0B1 — Risk Score 5.9</span><span class="risk-pill">Low</span></li>
+                </ul>
+            </section>
+
+            <section class="panel">
+                <h2>Top Risk Factors</h2>
+                <p>The risk engine evaluates wallet behavior across alerts, transaction velocity, and known threat
+                    categories.</p>
+                <div class="risk-summary" id="topFactorsContainer">
+                    <div class="risk-chip">Unusual Volume</div>
+                    <div class="risk-chip">Rapid Transfers</div>
+                    <div class="risk-chip">Peer Risk</div>
+                    <div class="risk-chip">Darknet Links</div>
+                </div>
+            </section>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-card">
+                <h3>Recent High-Risk Activity</h3>
+                <p>Wallet 0xA1...F7C moved 3.8M USDT through 7 new addresses in the last 12 hours.</p>
+            </div>
+            <div class="timeline-card">
+                <h3>Alert Triggered</h3>
+                <p>Sanctions screening flagged wallet 0xB8...9D2 for interaction with a blacklisted exchange.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = (window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
+            ? window.location.origin
+            : 'http://localhost:5000';
+        const RISK_ENDPOINT = '/api/risk';
+
+        function go(page) {
+            window.location.href = page;
+        }
+
+        async function fetchJson(url, options) {
+            const res = await fetch(url, options);
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+            }
+            return res.json();
+        }
+
+        async function loadRiskData() {
+            try {
+                const data = await fetchJson(`${API_BASE_URL}${RISK_ENDPOINT}`);
+
+                document.getElementById('totalAlerts').innerText = data.totalAlerts ?? 0;
+                document.getElementById('highRiskWallets').innerText = data.highRiskWallets ?? 0;
+                document.getElementById('avgRiskScore').innerText = data.avgRiskScore ?? 0;
+                document.getElementById('flaggedTx').innerText = data.flaggedTx ?? 0;
+
+                const categoryContainer = document.getElementById('topCategories');
+                categoryContainer.innerHTML = '';
+                if (data.topCategories && data.topCategories.length) {
+                    data.topCategories.forEach(category => {
+                        const chip = document.createElement('div');
+                        chip.className = 'risk-chip';
+                        chip.innerText = `${category.name}: ${category.count}`;
+                        categoryContainer.appendChild(chip);
+                    });
+                }
+
+                const factorContainer = document.getElementById('topFactorsContainer');
+                factorContainer.innerHTML = '';
+                if (data.topFactors && data.topFactors.length) {
+                    data.topFactors.forEach(factor => {
+                        const chip = document.createElement('div');
+                        chip.className = 'risk-chip';
+                        chip.innerText = factor;
+                        factorContainer.appendChild(chip);
+                    });
+                }
+
+                const riskList = document.getElementById('topRiskList');
+                riskList.innerHTML = '';
+                if (data.topFactors && data.topFactors.length) {
+                    data.topFactors.forEach(factor => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<span>${factor}</span><span class="risk-pill">High</span>`;
+                        riskList.appendChild(li);
+                    });
+                } else {
+                    riskList.innerHTML = '<li><span>No risk factors available</span></li>';
+                }
+
+                const timelineContainer = document.querySelector('.timeline');
+                timelineContainer.innerHTML = '';
+                if (data.recentEvents && data.recentEvents.length) {
+                    data.recentEvents.forEach(event => {
+                        const card = document.createElement('div');
+                        card.className = 'timeline-card';
+                        card.innerHTML = `<h3>${event.title}</h3><p>${event.detail}</p>`;
+                        timelineContainer.appendChild(card);
+                    });
+                } else {
+                    timelineContainer.innerHTML = '<div class="timeline-card"><h3>No recent events</h3></div>';
+                }
+            } catch (error) {
+                console.error('[Risk] Failed to load risk data:', error);
+                alert('Unable to load risk data. Please check backend connectivity.');
+            }
+        }
+
+        function refreshRiskData() {
+            loadRiskData();
+        }
+
+        loadRiskData();
+    </script>
 </body>
 
 </html>

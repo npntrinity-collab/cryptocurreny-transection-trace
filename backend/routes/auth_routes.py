@@ -1,37 +1,24 @@
 from flask import Blueprint, request, jsonify
-from config.database import db
+from utils.sample_data import get_auth
 
 auth_bp = Blueprint('auth', __name__)
 
-users = db["users"]
+auth_data = get_auth().copy()
 
 
 @auth_bp.route('/api/signup', methods=['POST'])
 def signup():
-
     data = request.json
-
-    user = {
-        "email": data["email"],
-        "password": data["password"]
-    }
-
-    users.insert_one(user)
-
-    return jsonify({"success": True})
+    auth_data.setdefault('users', []).append({
+        "email": data.get('email'),
+        "password": data.get('password')
+    })
+    return jsonify({"success": True, "user": {"email": data.get('email'), "role": "analyst"}})
 
 
 @auth_bp.route('/api/login', methods=['POST'])
 def login():
-
     data = request.json
-
-    user = users.find_one({
-        "email": data["email"],
-        "password": data["password"]
-    })
-
-    if user:
-        return jsonify({"success": True})
-    else:
-        return jsonify({"success": False})
+    users = auth_data.get('users', [])
+    valid_user = any(user.get('email') == data.get('email') and user.get('password') == data.get('password') for user in users)
+    return jsonify({"success": bool(valid_user)})

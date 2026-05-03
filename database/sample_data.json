@@ -1,1 +1,210 @@
-# sample_data.json
+{
+  "dashboard": {
+    "total_cases": 22,
+    "high_risk": 11,
+    "transactions": 392,
+    "wallets": 128,
+    "open_cases": 14,
+    "closed_cases": 8,
+    "active_alerts": 52
+  },
+  "trace": {
+    "case": {
+      "id": "CASE-010",
+      "input": "0xF39B6C4A8D23",
+      "status": "ACTIVE"
+    },
+    "summary": {
+      "totalVolume": "78 BTC",
+      "wallets": 12,
+      "transactions": 16,
+      "suspicious": 7
+    },
+    "risk": {
+      "score": 91,
+      "level": "HIGH",
+      "flags": [
+        "Darknet Market Transfer",
+        "Large Transaction",
+        "Mixer Usage Detected",
+        "Sanctions Exposure"
+      ]
+    },
+    "graph": {
+      "nodes": [
+        {"data": {"id": "A", "label": "Wallet A", "type": "source"}},
+        {"data": {"id": "B", "label": "Wallet B", "type": "intermediate"}},
+        {"data": {"id": "C", "label": "Wallet C", "type": "intermediate"}},
+        {"data": {"id": "MX", "label": "Mixer", "type": "mixer"}},
+        {"data": {"id": "DN", "label": "Darknet", "type": "darknet"}},
+        {"data": {"id": "EX", "label": "Exchange", "type": "exchange"}},
+        {"data": {"id": "S1", "label": "Sanctioned 1", "type": "sanctioned"}},
+        {"data": {"id": "S2", "label": "Sanctioned 2", "type": "sanctioned"}}
+      ],
+      "edges": [
+        {"data": {"source": "A", "target": "B", "label": "15 BTC"}},
+        {"data": {"source": "B", "target": "C", "label": "12 BTC"}},
+        {"data": {"source": "C", "target": "MX", "label": "18 BTC"}},
+        {"data": {"source": "MX", "target": "DN", "label": "13 BTC"}},
+        {"data": {"source": "MX", "target": "S1", "label": "8 BTC"}},
+        {"data": {"source": "DN", "target": "EX", "label": "7 BTC"}},
+        {"data": {"source": "S1", "target": "S2", "label": "6 BTC"}}
+      ]
+    },
+    "timeline": [
+      {"time": "09:10 AM", "text": "0xF39B6C4A8D23 → 0xE2D4F8A1B7C3 (15 BTC)"},
+      {"time": "09:45 AM", "text": "0xE2D4F8A1B7C3 → 0xC9D8E1A0F2B4 (12 BTC)"},
+      {"time": "10:30 AM", "text": "0xC9D8E1A0F2B4 → Mixer (18 BTC)"},
+      {"time": "11:00 AM", "text": "Mixer → Darknet (13 BTC)"},
+      {"time": "11:35 AM", "text": "Mixer → Sanctioned 1 (8 BTC)"},
+      {"time": "12:10 PM", "text": "Darknet → Exchange (7 BTC)"}
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "CASE-001",
+      "title": "Suspicious Mixer Activity",
+      "wallet": "0xA1B2C3D4E5F6",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-002",
+      "title": "Sanctions Screening Hit",
+      "wallet": "0xF6E5D4C3B2A1",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-003",
+      "title": "High-Risk OTC Movement",
+      "wallet": "0x1234ABCD5678",
+      "status": "CLOSED"
+    },
+    {
+      "case_id": "CASE-004",
+      "title": "Address Cluster With Mixer",
+      "wallet": "0xD4E5F6A1B2C3",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-005",
+      "title": "Pulse Check: Spike in Volume",
+      "wallet": "0x9F8E7D6C5B4A",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-006",
+      "title": "Darknet Linked Transfer",
+      "wallet": "0x5B4C3D2E1F0A",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-007",
+      "title": "Structured Withdrawals Detected",
+      "wallet": "0x2A3B4C5D6E7F",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-008",
+      "title": "Potential Scam Cluster",
+      "wallet": "0x8E7D6C5B4A3F",
+      "status": "CLOSED"
+    },
+    {
+      "case_id": "CASE-009",
+      "title": "Rapid Transfer Chain",
+      "wallet": "0x7C6D5E4F3A2B",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-010",
+      "title": "Sanctions Risk Propagation",
+      "wallet": "0xF39B6C4A8D23",
+      "status": "ACTIVE"
+    }
+  ],
+  "riskPage": {
+    "totalAlerts": 68,
+    "highRiskWallets": 14,
+    "avgRiskScore": 7.9,
+    "flaggedTx": 92,
+    "topCategories": [
+      {"name": "Phishing", "count": 18},
+      {"name": "Money Laundering", "count": 13},
+      {"name": "Sanctions", "count": 9},
+      {"name": "Darknet", "count": 6},
+      {"name": "Ransomware", "count": 4}
+    ],
+    "topFactors": [
+      "Unusual Volume",
+      "Rapid Transfers",
+      "Peer Risk",
+      "Darknet Links",
+      "Sanctions Exposure"
+    ],
+    "recentEvents": [
+      {
+        "title": "Wallet 0xA1...F7C moved 3.8M USDT",
+        "detail": "Transferred through 7 new addresses in 12 hours."
+      },
+      {
+        "title": "Sanctions screening hit",
+        "detail": "Wallet 0xB8...9D2 interacted with a blacklisted exchange."
+      },
+      {
+        "title": "Mixer cluster detected",
+        "detail": "Multiple inbound transactions were consolidated into one mixer address."
+      },
+      {
+        "title": "Large-volume sweep",
+        "detail": "0x7C6...E4F moved 12 BTC to an untracked wallet after exchange withdrawal."
+      }
+    ]
+  },
+  "auth": {
+    "users": [
+      {
+        "email": "investigator@example.com",
+        "password": "password123",
+        "role": "analyst",
+        "name": "Crypto Analyst"
+      }
+    ],
+    "signup": {
+      "success": true,
+      "user": {
+        "email": "investigator@example.com",
+        "role": "analyst",
+        "name": "Crypto Analyst"
+      }
+    },
+    "login": {
+      "success": true,
+      "token": "sample-auth-token-12345",
+      "expires_in": 3600
+    }
+  },
+  "report": {
+    "case_id": "CASE-010",
+    "summary": "Clear pattern of mixer routing with darknet exits and sanctioned counterparties.",
+    "risk_score": 91,
+    "recommendations": [
+      "Escalate to AML team",
+      "Block outgoing withdrawals",
+      "Review connected cluster wallets",
+      "Monitor associated wallets for 48 hours"
+    ],
+    "analysis": {
+      "key_findings": [
+        "Mixer used to obscure 18 BTC movement",
+        "Sanctioned counterparties received 14 BTC",
+        "Multiple short-lived wallets used for layering"
+      ],
+      "next_steps": [
+        "Freeze suspicious funds",
+        "Submit SAR with supporting transaction chain",
+        "Coordinate with compliance team"
+      ]
+    }
+  }
+}
+
