@@ -1,5 +1,11 @@
 document.getElementById("traceBtn").addEventListener("click", async () => {
-  const data = await fetchTraceData();
+  const wallet = document.getElementById("walletInput").value.trim();
+  if (!wallet) {
+    alert('Please enter a wallet address to trace.');
+    return;
+  }
+
+  const data = await fetchTraceData(wallet);
 
   // CASE INFO
   document.getElementById("caseId").innerText = data.case.id;
@@ -14,7 +20,7 @@ document.getElementById("traceBtn").addEventListener("click", async () => {
     data.summary.suspicious;
 
   // MAIN DATA
-  renderGraph(data.graph);
+  renderVisual(data);
   renderRisk(data.risk);
   renderTimeline(data.timeline);
 });

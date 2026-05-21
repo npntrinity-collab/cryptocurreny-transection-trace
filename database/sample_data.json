@@ -1,24 +1,36 @@
 {
   "dashboard": {
-    "total_cases": 22,
-    "high_risk": 11,
-    "transactions": 392,
-    "wallets": 128,
-    "open_cases": 14,
-    "closed_cases": 8,
-    "active_alerts": 52
+    "total_cases": 60,
+    "high_risk": 23,
+    "transactions": 1570,
+    "wallets": 410,
+    "open_cases": 38,
+    "closed_cases": 22,
+    "active_alerts": 181,
+    "new_alerts_last_24h": 42,
+    "escalations": 18,
+    "review_queue": 46,
+    "avg_case_age_days": 8.1,
+    "avg_response_time_minutes": 22,
+    "high_priority_cases": 16
   },
   "trace": {
     "case": {
       "id": "CASE-010",
       "input": "0xF39B6C4A8D23",
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "assigned_investigator": "Crypto Analyst",
+      "priority": "HIGH",
+      "created_at": "2026-05-16T08:30:00Z"
     },
     "summary": {
-      "totalVolume": "78 BTC",
-      "wallets": 12,
-      "transactions": 16,
-      "suspicious": 7
+      "totalVolume": "178 BTC",
+      "wallets": 24,
+      "transactions": 34,
+      "suspicious": 13,
+      "confirmed_clusters": 3,
+      "possible_mixer_routes": 2,
+      "average_hop_depth": 4.2
     },
     "risk": {
       "score": 91,
@@ -27,38 +39,269 @@
         "Darknet Market Transfer",
         "Large Transaction",
         "Mixer Usage Detected",
-        "Sanctions Exposure"
-      ]
+        "Sanctions Exposure",
+        "High-Risk Counterparty",
+        "Rapid Layering",
+        "Exchange Withdrawal",
+        "Unusual Recipient Pattern"
+      ],
+      "exposure": {
+        "darknet": "13 BTC",
+        "sanctions": "14 BTC",
+        "exchange": "7 BTC",
+        "mixer": "18 BTC"
+      }
     },
     "graph": {
       "nodes": [
         {"data": {"id": "A", "label": "Wallet A", "type": "source"}},
         {"data": {"id": "B", "label": "Wallet B", "type": "intermediate"}},
         {"data": {"id": "C", "label": "Wallet C", "type": "intermediate"}},
+        {"data": {"id": "D", "label": "Wallet D", "type": "intermediate"}},
+        {"data": {"id": "E", "label": "Wallet E", "type": "intermediate"}},
+        {"data": {"id": "F", "label": "Wallet F", "type": "intermediate"}},
         {"data": {"id": "MX", "label": "Mixer", "type": "mixer"}},
         {"data": {"id": "DN", "label": "Darknet", "type": "darknet"}},
         {"data": {"id": "EX", "label": "Exchange", "type": "exchange"}},
         {"data": {"id": "S1", "label": "Sanctioned 1", "type": "sanctioned"}},
-        {"data": {"id": "S2", "label": "Sanctioned 2", "type": "sanctioned"}}
+        {"data": {"id": "S2", "label": "Sanctioned 2", "type": "sanctioned"}},
+        {"data": {"id": "S3", "label": "Sanctioned 3", "type": "sanctioned"}},
+        {"data": {"id": "G1", "label": "Gateway 1", "type": "gateway"}},
+        {"data": {"id": "G2", "label": "Gateway 2", "type": "gateway"}},
+        {"data": {"id": "C1", "label": "Cluster 1", "type": "cluster"}},
+        {"data": {"id": "C2", "label": "Cluster 2", "type": "cluster"}},
+        {"data": {"id": "C3", "label": "Cluster 3", "type": "cluster"}},
+        {"data": {"id": "L1", "label": "Layer 1", "type": "layer"}},
+        {"data": {"id": "L2", "label": "Layer 2", "type": "layer"}},
+        {"data": {"id": "L3", "label": "Layer 3", "type": "layer"}}
       ],
       "edges": [
-        {"data": {"source": "A", "target": "B", "label": "15 BTC"}},
-        {"data": {"source": "B", "target": "C", "label": "12 BTC"}},
-        {"data": {"source": "C", "target": "MX", "label": "18 BTC"}},
+        {"data": {"source": "A", "target": "B", "label": "23 BTC"}},
+        {"data": {"source": "B", "target": "C", "label": "18 BTC"}},
+        {"data": {"source": "C", "target": "D", "label": "14 BTC"}},
+        {"data": {"source": "D", "target": "E", "label": "12 BTC"}},
+        {"data": {"source": "E", "target": "MX", "label": "22 BTC"}},
+        {"data": {"source": "MX", "target": "F", "label": "11 BTC"}},
         {"data": {"source": "MX", "target": "DN", "label": "13 BTC"}},
-        {"data": {"source": "MX", "target": "S1", "label": "8 BTC"}},
+        {"data": {"source": "F", "target": "G1", "label": "8 BTC"}},
+        {"data": {"source": "G1", "target": "S1", "label": "6 BTC"}},
+        {"data": {"source": "G1", "target": "C1", "label": "5 BTC"}},
+        {"data": {"source": "C1", "target": "S2", "label": "7 BTC"}},
+        {"data": {"source": "C1", "target": "L1", "label": "9 BTC"}},
+        {"data": {"source": "L1", "target": "G2", "label": "4 BTC"}},
+        {"data": {"source": "G2", "target": "S3", "label": "3 BTC"}},
+        {"data": {"source": "G2", "target": "C2", "label": "5 BTC"}},
+        {"data": {"source": "C2", "target": "L2", "label": "7 BTC"}},
+        {"data": {"source": "L2", "target": "C3", "label": "6 BTC"}},
+        {"data": {"source": "C3", "target": "EX", "label": "7 BTC"}},
+        {"data": {"source": "EX", "target": "L3", "label": "5 BTC"}},
+        {"data": {"source": "L3", "target": "S1", "label": "4 BTC"}},
+        {"data": {"source": "S1", "target": "S2", "label": "6 BTC"}},
+        {"data": {"source": "S2", "target": "S3", "label": "4 BTC"}},
         {"data": {"source": "DN", "target": "EX", "label": "7 BTC"}},
-        {"data": {"source": "S1", "target": "S2", "label": "6 BTC"}}
+        {"data": {"source": "EX", "target": "C3", "label": "3 BTC"}}
       ]
     },
     "timeline": [
-      {"time": "09:10 AM", "text": "0xF39B6C4A8D23 → 0xE2D4F8A1B7C3 (15 BTC)"},
-      {"time": "09:45 AM", "text": "0xE2D4F8A1B7C3 → 0xC9D8E1A0F2B4 (12 BTC)"},
-      {"time": "10:30 AM", "text": "0xC9D8E1A0F2B4 → Mixer (18 BTC)"},
-      {"time": "11:00 AM", "text": "Mixer → Darknet (13 BTC)"},
-      {"time": "11:35 AM", "text": "Mixer → Sanctioned 1 (8 BTC)"},
-      {"time": "12:10 PM", "text": "Darknet → Exchange (7 BTC)"}
+      {"time": "08:15 AM", "text": "0xF39B6C4A8D23 → 0xA2C4D6E8F9B0 (23 BTC)"},
+      {"time": "08:35 AM", "text": "0xA2C4D6E8F9B0 → 0xB1D3F5A7C9E0 (18 BTC)"},
+      {"time": "08:57 AM", "text": "0xB1D3F5A7C9E0 → 0xC3D4E5F6A7B8 (14 BTC)"},
+      {"time": "09:12 AM", "text": "0xC3D4E5F6A7B8 → 0xD5E6F7A8B9C0 (12 BTC)"},
+      {"time": "09:30 AM", "text": "0xD5E6F7A8B9C0 → Mixer (22 BTC)"},
+      {"time": "09:55 AM", "text": "Mixer → 0xF1A2B3C4D5E6 (11 BTC)"},
+      {"time": "10:10 AM", "text": "0xF1A2B3C4D5E6 → 0xG1H2I3J4K5L6 (8 BTC)"},
+      {"time": "10:28 AM", "text": "0xG1H2I3J4K5L6 → Sanctioned 1 (6 BTC)"},
+      {"time": "10:45 AM", "text": "0xG1H2I3J4K5L6 → Cluster 1 (5 BTC)"},
+      {"time": "11:05 AM", "text": "Cluster 1 → Sanctioned 2 (7 BTC)"},
+      {"time": "11:22 AM", "text": "Cluster 1 → Layer 1 (9 BTC)"},
+      {"time": "11:40 AM", "text": "Layer 1 → Gateway 2 (4 BTC)"},
+      {"time": "11:52 AM", "text": "Gateway 2 → Sanctioned 3 (3 BTC)"},
+      {"time": "12:10 PM", "text": "Gateway 2 → Cluster 2 (5 BTC)"},
+      {"time": "12:28 PM", "text": "Cluster 2 → Layer 2 (7 BTC)"},
+      {"time": "12:45 PM", "text": "Layer 2 → Cluster 3 (6 BTC)"},
+      {"time": "01:05 PM", "text": "Cluster 3 → Exchange (7 BTC)"},
+      {"time": "01:20 PM", "text": "Exchange → Layer 3 (5 BTC)"},
+      {"time": "01:35 PM", "text": "Layer 3 → Sanctioned 1 (4 BTC)"},
+      {"time": "01:50 PM", "text": "Darknet → Exchange (7 BTC)"}
     ]
+  },
+  "traces": {
+    "0xA1B2C3D4E5F6": {
+      "case": {
+        "id": "CASE-001",
+        "input": "0xA1B2C3D4E5F6",
+        "status": "ACTIVE",
+        "assigned_investigator": "Crypto Analyst",
+        "priority": "HIGH",
+        "created_at": "2026-05-15T11:20:00Z"
+      },
+      "summary": {
+        "totalVolume": "42 BTC",
+        "wallets": 9,
+        "transactions": 14,
+        "suspicious": 6,
+        "confirmed_clusters": 2,
+        "possible_mixer_routes": 1,
+        "average_hop_depth": 3.8
+      },
+      "risk": {
+        "score": 84,
+        "level": "HIGH",
+        "flags": [
+          "Mixer Usage Detected",
+          "Clustered Transfers",
+          "Wallet Reuse",
+          "High Volume"
+        ],
+        "exposure": {
+          "mixer": "16 BTC",
+          "exchange": "8 BTC",
+          "darknet": "0 BTC"
+        }
+      },
+      "graph": {
+        "nodes": [
+          {"data": {"id": "W1", "label": "Source Wallet", "type": "source"}},
+          {"data": {"id": "W2", "label": "Layer 1", "type": "layer"}},
+          {"data": {"id": "W3", "label": "Mixer", "type": "mixer"}},
+          {"data": {"id": "W4", "label": "Exchange", "type": "exchange"}},
+          {"data": {"id": "W5", "label": "Cluster", "type": "cluster"}},
+          {"data": {"id": "W6", "label": "Sanctioned", "type": "sanctioned"}},
+          {"data": {"id": "W7", "label": "Gateway", "type": "gateway"}},
+          {"data": {"id": "W8", "label": "Sink Wallet", "type": "sink"}},
+          {"data": {"id": "W9", "label": "Input", "type": "input"}}
+        ],
+        "edges": [
+          {"data": {"source": "W9", "target": "W1", "label": "10 BTC"}},
+          {"data": {"source": "W1", "target": "W2", "label": "8 BTC"}},
+          {"data": {"source": "W2", "target": "W3", "label": "7 BTC"}},
+          {"data": {"source": "W3", "target": "W4", "label": "5 BTC"}},
+          {"data": {"source": "W3", "target": "W5", "label": "2 BTC"}},
+          {"data": {"source": "W4", "target": "W6", "label": "4 BTC"}},
+          {"data": {"source": "W5", "target": "W7", "label": "2 BTC"}},
+          {"data": {"source": "W7", "target": "W8", "label": "1 BTC"}}
+        ]
+      },
+      "timeline": [
+        {"time": "02:12 PM", "text": "0xA1B2C3D4E5F6 → 0xD1E2F3A4B5C6 (10 BTC)"},
+        {"time": "02:40 PM", "text": "0xD1E2F3A4B5C6 → 0xE1F2A3B4C5D6 (8 BTC)"},
+        {"time": "03:05 PM", "text": "0xE1F2A3B4C5D6 → Mixer (7 BTC)"},
+        {"time": "03:20 PM", "text": "Mixer → Exchange (5 BTC)"},
+        {"time": "03:40 PM", "text": "Exchange → Sanctioned (4 BTC)"}
+      ]
+    },
+    "0x5B4C3D2E1F0A": {
+      "case": {
+        "id": "CASE-006",
+        "input": "0x5B4C3D2E1F0A",
+        "status": "ACTIVE",
+        "assigned_investigator": "Risk Reviewer",
+        "priority": "HIGH",
+        "created_at": "2026-05-16T14:05:00Z"
+      },
+      "summary": {
+        "totalVolume": "65 BTC",
+        "wallets": 11,
+        "transactions": 18,
+        "suspicious": 9,
+        "confirmed_clusters": 2,
+        "possible_mixer_routes": 1,
+        "average_hop_depth": 4.0
+      },
+      "risk": {
+        "score": 88,
+        "level": "HIGH",
+        "flags": [
+          "Darknet Linkage",
+          "High-Risk Counterparty",
+          "Multiple Withdrawals"
+        ],
+        "exposure": {
+          "darknet": "12 BTC",
+          "exchange": "9 BTC",
+          "mixer": "4 BTC"
+        }
+      },
+      "graph": {
+        "nodes": [
+          {"data": {"id": "X1", "label": "Input Wallet", "type": "input"}},
+          {"data": {"id": "X2", "label": "Darknet Hub", "type": "darknet"}},
+          {"data": {"id": "X3", "label": "Exchange", "type": "exchange"}},
+          {"data": {"id": "X4", "label": "Sanctioned Wallet", "type": "sanctioned"}},
+          {"data": {"id": "X5", "label": "Layer Register", "type": "layer"}},
+          {"data": {"id": "X6", "label": "Splitter", "type": "cluster"}},
+          {"data": {"id": "X7", "label": "Mixer", "type": "mixer"}},
+          {"data": {"id": "X8", "label": "End Wallet", "type": "sink"}}
+        ],
+        "edges": [
+          {"data": {"source": "X1", "target": "X2", "label": "20 BTC"}},
+          {"data": {"source": "X2", "target": "X3", "label": "10 BTC"}},
+          {"data": {"source": "X2", "target": "X7", "label": "6 BTC"}},
+          {"data": {"source": "X7", "target": "X5", "label": "4 BTC"}},
+          {"data": {"source": "X5", "target": "X6", "label": "3 BTC"}},
+          {"data": {"source": "X6", "target": "X4", "label": "5 BTC"}},
+          {"data": {"source": "X3", "target": "X8", "label": "7 BTC"}}
+        ]
+      },
+      "timeline": [
+        {"time": "04:05 PM", "text": "0x5B4C3D2E1F0A → Darknet Hub (20 BTC)"},
+        {"time": "04:22 PM", "text": "Darknet Hub → Exchange (10 BTC)"},
+        {"time": "04:40 PM", "text": "Darknet Hub → Mixer (6 BTC)"},
+        {"time": "04:58 PM", "text": "Mixer → Layer Register (4 BTC)"},
+        {"time": "05:15 PM", "text": "Layer Register → Sanctioned Wallet (5 BTC)"}
+      ]
+    },
+    "0x3C4D5E6F7A8B": {
+      "case": {
+        "id": "CASE-018",
+        "input": "0x3C4D5E6F7A8B",
+        "status": "REVIEW",
+        "assigned_investigator": "Compliance Supervisor",
+        "priority": "MEDIUM",
+        "created_at": "2026-05-16T18:20:00Z"
+      },
+      "summary": {
+        "totalVolume": "31 BTC",
+        "wallets": 7,
+        "transactions": 10,
+        "suspicious": 5,
+        "confirmed_clusters": 1,
+        "possible_mixer_routes": 0,
+        "average_hop_depth": 2.9
+      },
+      "risk": {
+        "score": 72,
+        "level": "MEDIUM",
+        "flags": [
+          "Exchange Hopping",
+          "Cross-Exchange Movement"
+        ],
+        "exposure": {
+          "exchange": "31 BTC"
+        }
+      },
+      "graph": {
+        "nodes": [
+          {"data": {"id": "Y1", "label": "Input", "type": "input"}},
+          {"data": {"id": "Y2", "label": "Exchange A", "type": "exchange"}},
+          {"data": {"id": "Y3", "label": "Exchange B", "type": "exchange"}},
+          {"data": {"id": "Y4", "label": "Exchange C", "type": "exchange"}},
+          {"data": {"id": "Y5", "label": "Settlement", "type": "sink"}}
+        ],
+        "edges": [
+          {"data": {"source": "Y1", "target": "Y2", "label": "12 BTC"}},
+          {"data": {"source": "Y2", "target": "Y3", "label": "9 BTC"}},
+          {"data": {"source": "Y3", "target": "Y4", "label": "6 BTC"}},
+          {"data": {"source": "Y4", "target": "Y5", "label": "4 BTC"}}
+        ]
+      },
+      "timeline": [
+        {"time": "05:00 PM", "text": "0x3C4D5E6F7A8B → Exchange A (12 BTC)"},
+        {"time": "05:18 PM", "text": "Exchange A → Exchange B (9 BTC)"},
+        {"time": "05:35 PM", "text": "Exchange B → Exchange C (6 BTC)"},
+        {"time": "05:53 PM", "text": "Exchange C → Settlement (4 BTC)"}
+      ]
+    }
   },
   "cases": [
     {
@@ -120,26 +363,875 @@
       "title": "Sanctions Risk Propagation",
       "wallet": "0xF39B6C4A8D23",
       "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-011",
+      "title": "Exchange Deposit Spike",
+      "wallet": "0xE1F2D3C4B5A6",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-012",
+      "title": "Unusual Peer Network Growth",
+      "wallet": "0xB1C2D3E4F5A6",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-013",
+      "title": "Layered Withdrawals",
+      "wallet": "0xC4D5E6F7A8B9",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-014",
+      "title": "High-Risk Counterparty Exposure",
+      "wallet": "0x9A8B7C6D5E4F",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-015",
+      "title": "Multiple Wallet Sweeps",
+      "wallet": "0x1A2B3C4D5E6F",
+      "status": "CLOSED"
+    },
+    {
+      "case_id": "CASE-016",
+      "title": "Darknet Marketplace Funding",
+      "wallet": "0x0F1E2D3C4B5A",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-017",
+      "title": "Sanctioned Counterparty Cluster",
+      "wallet": "0x2B3C4D5E6F7A",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-018",
+      "title": "Rapid Exchange Arbitrage",
+      "wallet": "0x3C4D5E6F7A8B",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-019",
+      "title": "Phishing Fund Disbursement",
+      "wallet": "0x4D5E6F7A8B9C",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-020",
+      "title": "Cross-Chain Bridge Risk",
+      "wallet": "0x5E6F7A8B9C0D",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-021",
+      "title": "New Account Round-Trip",
+      "wallet": "0x6F7A8B9C0D1E",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-022",
+      "title": "Clustered Mixer Role",
+      "wallet": "0x7A8B9C0D1E2F",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-023",
+      "title": "High-Volume Treasury Movement",
+      "wallet": "0x8B9C0D1E2F3A",
+      "status": "CLOSED"
+    },
+    {
+      "case_id": "CASE-024",
+      "title": "Emerging Risk Address Pair",
+      "wallet": "0x9C0D1E2F3A4B",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-025",
+      "title": "Wallet Gateways Detected",
+      "wallet": "0x0D1E2F3A4B5C",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-026",
+      "title": "Unauthorized Exchange Onboarding",
+      "wallet": "0x1E2F3A4B5C6D",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-027",
+      "title": "Layered Sanctions Activity",
+      "wallet": "0x2F3A4B5C6D7E",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-028",
+      "title": "Rapid Account Rotation",
+      "wallet": "0x3A4B5C6D7E8F",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-029",
+      "title": "Wash Trading Indicators",
+      "wallet": "0x4B5C6D7E8F90",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-030",
+      "title": "Liquidity Mining Abuse",
+      "wallet": "0x5C6D7E8F9012",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-031",
+      "title": "Darknet Funding Route",
+      "wallet": "0x6D7E8F901234",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-032",
+      "title": "Suspicious Custody Transfer",
+      "wallet": "0x7E8F90123456",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-033",
+      "title": "High-Risk Exchange Pair",
+      "wallet": "0x8F9012345678",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-034",
+      "title": "Cross-Border Settlement Risk",
+      "wallet": "0x90123456789A",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-035",
+      "title": "Rapid Chain Splitting",
+      "wallet": "0x0123456789AB",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-036",
+      "title": "Phishing Campaign Payouts",
+      "wallet": "0x123456789ABC",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-037",
+      "title": "Peer Monitoring Alert",
+      "wallet": "0x23456789ABCD",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-038",
+      "title": "Exchange Withdrawal Spike",
+      "wallet": "0x3456789ABCDE",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-039",
+      "title": "Mixer Outflow Pattern",
+      "wallet": "0x456789ABCDEF",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-040",
+      "title": "Sanctions Network Expansion",
+      "wallet": "0x56789ABCDEF0",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-041",
+      "title": "On-Chain Spoofing Pattern",
+      "wallet": "0x6789ABCDEF01",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-042",
+      "title": "Cross-Exchange Fund Sweep",
+      "wallet": "0x789ABCDEF012",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-043",
+      "title": "High-Risk Cold Wallet Transfer",
+      "wallet": "0x89ABCDEF0123",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-044",
+      "title": "Algorithmic Wash Trading",
+      "wallet": "0x9ABCDEF01234",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-045",
+      "title": "Peer Network Injection",
+      "wallet": "0xABCDEF012345",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-046",
+      "title": "Darknet-to-Exchange Funnel",
+      "wallet": "0xBCDEF0123456",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-047",
+      "title": "Rapid Wallet Layering",
+      "wallet": "0xCDEF01234567",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-048",
+      "title": "Stolen Asset Redistribution",
+      "wallet": "0xDEF012345678",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-049",
+      "title": "Mixer Reentry Pattern",
+      "wallet": "0xEF0123456789",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-050",
+      "title": "Emergent Terror Financing Link",
+      "wallet": "0xF0123456789A",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-051",
+      "title": "Sanctioned Exchange Interaction",
+      "wallet": "0x0123456789AB",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-052",
+      "title": "High-Risk ICO Funding",
+      "wallet": "0x123456789ABC",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-053",
+      "title": "Suspicious Custodial Movement",
+      "wallet": "0x23456789ABCD",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-054",
+      "title": "New Account Deposit Surge",
+      "wallet": "0x3456789ABCDE",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-055",
+      "title": "Clustered Loan Repayment",
+      "wallet": "0x456789ABCDEF",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-056",
+      "title": "Oil-Linked Commodity Movement",
+      "wallet": "0x56789ABCDEF0",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-057",
+      "title": "Cross-Chain Arbitrage Risk",
+      "wallet": "0x6789ABCDEF01",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-058",
+      "title": "High-Risk Settlement Node",
+      "wallet": "0x789ABCDEF012",
+      "status": "REVIEW"
+    },
+    {
+      "case_id": "CASE-059",
+      "title": "Pipeline Smurfing Behavior",
+      "wallet": "0x89ABCDEF0123",
+      "status": "ACTIVE"
+    },
+    {
+      "case_id": "CASE-060",
+      "title": "Liquidity Migration Alert",
+      "wallet": "0x9ABCDEF01234",
+      "status": "REVIEW"
+    }
+  ],
+  "transactions": [
+    {
+      "tx_id": "TX-1001",
+      "from": "0xA2C4D6E8F9B0",
+      "to": "0xB1D3F5A7C9E0",
+      "amount": "18 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T08:35:00Z",
+      "risk_flags": ["Layering", "High Volume"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1002",
+      "from": "0xB1D3F5A7C9E0",
+      "to": "0xC3D4E5F6A7B8",
+      "amount": "14 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T08:57:00Z",
+      "risk_flags": ["Rapid Transfer"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1003",
+      "from": "0xD5E6F7A8B9C0",
+      "to": "0xF1A2B3C4D5E6",
+      "amount": "11 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T09:55:00Z",
+      "risk_flags": ["Mixer Usage"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1004",
+      "from": "0xF1A2B3C4D5E6",
+      "to": "0xG1H2I3J4K5L6",
+      "amount": "8 BTC",
+      "asset": "BTC",
+      "status": "PENDING",
+      "timestamp": "2026-05-17T10:10:00Z",
+      "risk_flags": ["Node Hopping"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1005",
+      "from": "0xG1H2I3J4K5L6",
+      "to": "0xS1",
+      "amount": "6 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T10:28:00Z",
+      "risk_flags": ["Sanctioned Counterparty"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1006",
+      "from": "0xG1H2I3J4K5L6",
+      "to": "0xC1",
+      "amount": "5 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T10:45:00Z",
+      "risk_flags": ["Cluster Movement"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1007",
+      "from": "0xC1",
+      "to": "0xS2",
+      "amount": "7 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T11:05:00Z",
+      "risk_flags": ["Sanctioned Counterparty"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1008",
+      "from": "0xC1",
+      "to": "0xL1",
+      "amount": "9 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T11:22:00Z",
+      "risk_flags": ["Layering"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1009",
+      "from": "0xL1",
+      "to": "0xG2",
+      "amount": "4 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T11:40:00Z",
+      "risk_flags": ["Gateway Movement"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1010",
+      "from": "0xG2",
+      "to": "0xS3",
+      "amount": "3 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T11:52:00Z",
+      "risk_flags": ["Sanctioned Counterparty"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1011",
+      "from": "0xG2",
+      "to": "0xC2",
+      "amount": "5 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T12:10:00Z",
+      "risk_flags": ["Cluster Movement"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1012",
+      "from": "0xC2",
+      "to": "0xL2",
+      "amount": "7 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T12:28:00Z",
+      "risk_flags": ["Layering"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1013",
+      "from": "0xL2",
+      "to": "0xC3",
+      "amount": "6 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T12:45:00Z",
+      "risk_flags": ["Chain Split"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1014",
+      "from": "0xC3",
+      "to": "0xEX",
+      "amount": "7 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T13:05:00Z",
+      "risk_flags": ["Exchange Withdrawal"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1015",
+      "from": "0xEX",
+      "to": "0xL3",
+      "amount": "5 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T13:20:00Z",
+      "risk_flags": ["Circuitous Routing"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1016",
+      "from": "0xL3",
+      "to": "0xS1",
+      "amount": "4 BTC",
+      "asset": "BTC",
+      "status": "PENDING",
+      "timestamp": "2026-05-17T13:35:00Z",
+      "risk_flags": ["Sanctions Exposure"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1017",
+      "from": "0xDN",
+      "to": "0xEX",
+      "amount": "7 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T13:50:00Z",
+      "risk_flags": ["Darknet Exit"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1018",
+      "from": "0xEX",
+      "to": "0xC3",
+      "amount": "3 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T14:10:00Z",
+      "risk_flags": ["Reentry"],
+      "related_case_id": "CASE-010"
+    },
+    {
+      "tx_id": "TX-1019",
+      "from": "0x0F1E2D3C4B5A",
+      "to": "0x123456789ABC",
+      "amount": "2.4M USDT",
+      "asset": "USDT",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-16T22:10:00Z",
+      "risk_flags": ["Exchange Deposit"],
+      "related_case_id": "CASE-011"
+    },
+    {
+      "tx_id": "TX-1020",
+      "from": "0x3A4B5C6D7E8F",
+      "to": "0x4B5C6D7E8F90",
+      "amount": "7.8 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-16T20:33:00Z",
+      "risk_flags": ["Rapid Rotation"],
+      "related_case_id": "CASE-028"
+    },
+    {
+      "tx_id": "TX-1021",
+      "from": "0x56789ABCDEF0",
+      "to": "0x6789ABCDEF01",
+      "amount": "1.2 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-16T19:22:00Z",
+      "risk_flags": ["Cold Wallet Transfer"],
+      "related_case_id": "CASE-043"
+    },
+    {
+      "tx_id": "TX-1022",
+      "from": "0xDEF012345678",
+      "to": "0xEF0123456789",
+      "amount": "0.92 BTC",
+      "asset": "BTC",
+      "status": "PENDING",
+      "timestamp": "2026-05-17T14:45:00Z",
+      "risk_flags": ["Mixer Reentry"],
+      "related_case_id": "CASE-049"
+    },
+    {
+      "tx_id": "TX-1023",
+      "from": "0x9ABCDEF01234",
+      "to": "0xABCDEF012345",
+      "amount": "1.8 BTC",
+      "asset": "BTC",
+      "status": "CONFIRMED",
+      "timestamp": "2026-05-17T15:02:00Z",
+      "risk_flags": ["High-Risk Counterparty"],
+      "related_case_id": "CASE-045"
+    }
+  ],
+  "wallets": [
+    {
+      "wallet_address": "0xD9E8F7A6B5C4",
+      "risk_score": 92,
+      "risk_level": "HIGH",
+      "categories": ["Sanctions", "Darknet"],
+      "last_activity": "2026-05-17T13:52:00Z",
+      "associated_cases": ["CASE-010", "CASE-014", "CASE-022"]
+    },
+    {
+      "wallet_address": "0xC8D7E6F5A4B3",
+      "risk_score": 89,
+      "risk_level": "HIGH",
+      "categories": ["Darknet", "Mixer"],
+      "last_activity": "2026-05-17T14:08:00Z",
+      "associated_cases": ["CASE-016", "CASE-031"]
+    },
+    {
+      "wallet_address": "0xB7C6D5E4F3A2",
+      "risk_score": 86,
+      "risk_level": "HIGH",
+      "categories": ["Mixer", "Layering"],
+      "last_activity": "2026-05-17T12:38:00Z",
+      "associated_cases": ["CASE-049", "CASE-053"]
+    },
+    {
+      "wallet_address": "0xA6B5C4D3E2F1",
+      "risk_score": 85,
+      "risk_level": "HIGH",
+      "categories": ["Money Laundering", "Cluster"],
+      "last_activity": "2026-05-17T11:05:00Z",
+      "associated_cases": ["CASE-007", "CASE-015"]
+    },
+    {
+      "wallet_address": "0xF9E8D7C6B5A4",
+      "risk_score": 81,
+      "risk_level": "MEDIUM",
+      "categories": ["Exchange", "Rapid Transfers"],
+      "last_activity": "2026-05-17T14:35:00Z",
+      "associated_cases": ["CASE-011", "CASE-018"]
+    },
+    {
+      "wallet_address": "0xE8D7C6B5A4F3",
+      "risk_score": 78,
+      "risk_level": "MEDIUM",
+      "categories": ["New Account", "Deposit Spike"],
+      "last_activity": "2026-05-17T10:33:00Z",
+      "associated_cases": ["CASE-054"]
+    },
+    {
+      "wallet_address": "0xD7C6B5A4F3E2",
+      "risk_score": 75,
+      "risk_level": "MEDIUM",
+      "categories": ["Suspicious Custody", "Gateway"],
+      "last_activity": "2026-05-17T09:02:00Z",
+      "associated_cases": ["CASE-032", "CASE-025"]
+    },
+    {
+      "wallet_address": "0xC6B5A4F3E2D1",
+      "risk_score": 72,
+      "risk_level": "MEDIUM",
+      "categories": ["Cross-Chain", "Arbitrage"],
+      "last_activity": "2026-05-17T16:10:00Z",
+      "associated_cases": ["CASE-057"]
+    },
+    {
+      "wallet_address": "0xB5A4F3E2D1C0",
+      "risk_score": 68,
+      "risk_level": "LOW",
+      "categories": ["Exchange", "Peer Network"],
+      "last_activity": "2026-05-17T12:44:00Z",
+      "associated_cases": ["CASE-037"]
+    },
+    {
+      "wallet_address": "0xA4F3E2D1C0B9",
+      "risk_score": 64,
+      "risk_level": "LOW",
+      "categories": ["Cluster", "Insider Trading"],
+      "last_activity": "2026-05-17T08:58:00Z",
+      "associated_cases": ["CASE-033"]
+    },
+    {
+      "wallet_address": "0x93E2D1C0B9A8",
+      "risk_score": 61,
+      "risk_level": "LOW",
+      "categories": ["Phishing", "Rapid Transfer"],
+      "last_activity": "2026-05-17T11:25:00Z",
+      "associated_cases": ["CASE-036"]
+    },
+    {
+      "wallet_address": "0x82D1C0B9A8F7",
+      "risk_score": 58,
+      "risk_level": "LOW",
+      "categories": ["Mixer", "Gateway"],
+      "last_activity": "2026-05-17T13:57:00Z",
+      "associated_cases": ["CASE-048"]
+    },
+    {
+      "wallet_address": "0x71C0B9A8F7E6",
+      "risk_score": 54,
+      "risk_level": "LOW",
+      "categories": ["Sanctions", "Darknet"],
+      "last_activity": "2026-05-17T14:21:00Z",
+      "associated_cases": ["CASE-056"]
+    },
+    {
+      "wallet_address": "0x60B9A8F7E6D5",
+      "risk_score": 51,
+      "risk_level": "LOW",
+      "categories": ["Stolen Funds", "Distribution"],
+      "last_activity": "2026-05-17T15:12:00Z",
+      "associated_cases": ["CASE-048", "CASE-059"]
+    },
+    {
+      "wallet_address": "0x50A8F7E6D5C4",
+      "risk_score": 49,
+      "risk_level": "LOW",
+      "categories": ["Exchange", "Large Withdrawal"],
+      "last_activity": "2026-05-17T16:00:00Z",
+      "associated_cases": ["CASE-038"]
+    },
+    {
+      "wallet_address": "0x40F7E6D5C4B3",
+      "risk_score": 45,
+      "risk_level": "LOW",
+      "categories": ["New Account", "Suspicious Deposit"],
+      "last_activity": "2026-05-17T17:10:00Z",
+      "associated_cases": ["CASE-054"]
+    },
+    {
+      "wallet_address": "0x30E6D5C4B3A2",
+      "risk_score": 42,
+      "risk_level": "LOW",
+      "categories": ["Phishing", "Fraud"],
+      "last_activity": "2026-05-17T18:20:00Z",
+      "associated_cases": ["CASE-036", "CASE-039"]
+    },
+    {
+      "wallet_address": "0x20D5C4B3A2F1",
+      "risk_score": 39,
+      "risk_level": "LOW",
+      "categories": ["Layering", "Collateral Movement"],
+      "last_activity": "2026-05-17T19:05:00Z",
+      "associated_cases": ["CASE-035"]
+    },
+    {
+      "wallet_address": "0x10C4B3A2F1E0",
+      "risk_score": 35,
+      "risk_level": "LOW",
+      "categories": ["Peer Risk", "Gateway"],
+      "last_activity": "2026-05-17T19:48:00Z",
+      "associated_cases": ["CASE-047"]
+    }
+  ],
+  "alerts": [
+    {
+      "alert_id": "AL-2001",
+      "category": "Sanctions",
+      "severity": "CRITICAL",
+      "wallet": "0xD9E8F7A6B5C4",
+      "created_at": "2026-05-17T13:53:00Z",
+      "status": "OPEN",
+      "triggered_by": "sanctions_screening"
+    },
+    {
+      "alert_id": "AL-2002",
+      "category": "Mixer",
+      "severity": "HIGH",
+      "wallet": "0xB7C6D5E4F3A2",
+      "created_at": "2026-05-17T14:50:00Z",
+      "status": "OPEN",
+      "triggered_by": "mixer_detection"
+    },
+    {
+      "alert_id": "AL-2003",
+      "category": "Darknet",
+      "severity": "HIGH",
+      "wallet": "0xC8D7E6F5A4B3",
+      "created_at": "2026-05-17T15:10:00Z",
+      "status": "OPEN",
+      "triggered_by": "darknet_match"
+    },
+    {
+      "alert_id": "AL-2004",
+      "category": "Phishing",
+      "severity": "MEDIUM",
+      "wallet": "0x123456789ABC",
+      "created_at": "2026-05-17T16:20:00Z",
+      "status": "REVIEW",
+      "triggered_by": "phishing_pattern"
+    },
+    {
+      "alert_id": "AL-2005",
+      "category": "Exchange",
+      "severity": "MEDIUM",
+      "wallet": "0xE8D7C6B5A4F3",
+      "created_at": "2026-05-17T16:50:00Z",
+      "status": "OPEN",
+      "triggered_by": "exchange_hop"
+    },
+    {
+      "alert_id": "AL-2006",
+      "category": "High-Risk Counterparty",
+      "severity": "HIGH",
+      "wallet": "0xABCDEF012345",
+      "created_at": "2026-05-17T17:12:00Z",
+      "status": "OPEN",
+      "triggered_by": "counterparty_watchlist"
+    },
+    {
+      "alert_id": "AL-2007",
+      "category": "Layering",
+      "severity": "MEDIUM",
+      "wallet": "0xC6B5A4F3E2D1",
+      "created_at": "2026-05-17T17:43:00Z",
+      "status": "REVIEW",
+      "triggered_by": "layered_withdrawal"
+    },
+    {
+      "alert_id": "AL-2008",
+      "category": "Rapid Transfer",
+      "severity": "LOW",
+      "wallet": "0x71C0B9A8F7E6",
+      "created_at": "2026-05-17T18:01:00Z",
+      "status": "OPEN",
+      "triggered_by": "transfer_frequency"
+    },
+    {
+      "alert_id": "AL-2009",
+      "category": "Stolen Funds",
+      "severity": "HIGH",
+      "wallet": "0x60B9A8F7E6D5",
+      "created_at": "2026-05-17T18:20:00Z",
+      "status": "OPEN",
+      "triggered_by": "blacklist_match"
+    },
+    {
+      "alert_id": "AL-2010",
+      "category": "New Account",
+      "severity": "LOW",
+      "wallet": "0x40F7E6D5C4B3",
+      "created_at": "2026-05-17T18:45:00Z",
+      "status": "OPEN",
+      "triggered_by": "recently_created"
+    },
+    {
+      "alert_id": "AL-2011",
+      "category": "Cross-Border Movement",
+      "severity": "MEDIUM",
+      "wallet": "0xB5A4F3E2D1C0",
+      "created_at": "2026-05-17T19:10:00Z",
+      "status": "REVIEW",
+      "triggered_by": "jurisdiction_risk"
+    },
+    {
+      "alert_id": "AL-2012",
+      "category": "Gateway",
+      "severity": "MEDIUM",
+      "wallet": "0xF9E8D7C6B5A4",
+      "created_at": "2026-05-17T19:30:00Z",
+      "status": "OPEN",
+      "triggered_by": "wallet_gateway"
+    },
+    {
+      "alert_id": "AL-2013",
+      "category": "Insider Trading",
+      "severity": "HIGH",
+      "wallet": "0xA4F3E2D1C0B9",
+      "created_at": "2026-05-17T20:00:00Z",
+      "status": "OPEN",
+      "triggered_by": "insider_pattern"
+    },
+    {
+      "alert_id": "AL-2014",
+      "category": "Rapid Chain Split",
+      "severity": "HIGH",
+      "wallet": "0x0123456789AB",
+      "created_at": "2026-05-17T20:25:00Z",
+      "status": "REVIEW",
+      "triggered_by": "chain_split"
     }
   ],
   "riskPage": {
-    "totalAlerts": 68,
-    "highRiskWallets": 14,
-    "avgRiskScore": 7.9,
-    "flaggedTx": 92,
+    "totalAlerts": 168,
+    "highRiskWallets": 29,
+    "avgRiskScore": 8.4,
+    "flaggedTx": 236,
     "topCategories": [
-      {"name": "Phishing", "count": 18},
-      {"name": "Money Laundering", "count": 13},
-      {"name": "Sanctions", "count": 9},
-      {"name": "Darknet", "count": 6},
-      {"name": "Ransomware", "count": 4}
+      {"name": "Phishing", "count": 34},
+      {"name": "Money Laundering", "count": 28},
+      {"name": "Sanctions", "count": 21},
+      {"name": "Darknet", "count": 18},
+      {"name": "Ransomware", "count": 12},
+      {"name": "Terrorist Financing", "count": 9},
+      {"name": "Insider Trading", "count": 8},
+      {"name": "Fraud", "count": 7},
+      {"name": "Mixer", "count": 6},
+      {"name": "Stolen Funds", "count": 5}
     ],
     "topFactors": [
       "Unusual Volume",
       "Rapid Transfers",
       "Peer Risk",
       "Darknet Links",
-      "Sanctions Exposure"
+      "Sanctions Exposure",
+      "Exchange Hops",
+      "Clustered Address Behavior",
+      "New Counterparty",
+      "Cross-Border Movement",
+      "High-Risk Asset Flow",
+      "IP Association",
+      "Layering Pattern"
     ],
     "recentEvents": [
       {
@@ -157,7 +1249,29 @@
       {
         "title": "Large-volume sweep",
         "detail": "0x7C6...E4F moved 12 BTC to an untracked wallet after exchange withdrawal."
+      },
+      {
+        "title": "Phishing payout pattern",
+        "detail": "Clustered disbursements from 0xE3F...A2B were split across 13 new wallets."
+      },
+      {
+        "title": "Rapid chain split",
+        "detail": "A single incoming transfer was split into 18 separate paths within 90 minutes."
+      },
+      {
+        "title": "Exchange hopping detected",
+        "detail": "Funds moved through 4 exchanges in under 24 hours."
+      },
+      {
+        "title": "Unusual custody transfer",
+        "detail": "Large holdings moved between high-risk wallet groups with unknown ownership."
       }
+    ],
+    "watchlist": [
+      {"wallet": "0xD9E8F7A6B5C4", "risk_score": 92, "category": "Sanctions"},
+      {"wallet": "0xC8D7E6F5A4B3", "risk_score": 89, "category": "Darknet"},
+      {"wallet": "0xB7C6D5E4F3A2", "risk_score": 86, "category": "Mixer"},
+      {"wallet": "0xA6B5C4D3E2F1", "risk_score": 85, "category": "Money Laundering"}
     ]
   },
   "auth": {
@@ -167,20 +1281,43 @@
         "password": "password123",
         "role": "analyst",
         "name": "Crypto Analyst"
+      },
+      {
+        "email": "supervisor@example.com",
+        "password": "securepass456",
+        "role": "supervisor",
+        "name": "Compliance Supervisor"
+      },
+      {
+        "email": "reviewer@example.com",
+        "password": "reviewer2026",
+        "role": "reviewer",
+        "name": "Risk Reviewer"
+      },
+      {
+        "email": "admin@example.com",
+        "password": "adminSecret!",
+        "role": "admin",
+        "name": "System Administrator"
       }
     ],
     "signup": {
       "success": true,
       "user": {
-        "email": "investigator@example.com",
+        "email": "newuser@example.com",
         "role": "analyst",
-        "name": "Crypto Analyst"
+        "name": "New Analyst"
       }
     },
     "login": {
       "success": true,
       "token": "sample-auth-token-12345",
-      "expires_in": 3600
+      "expires_in": 3600,
+      "user": {
+        "email": "investigator@example.com",
+        "role": "analyst",
+        "name": "Crypto Analyst"
+      }
     }
   },
   "report": {
@@ -191,20 +1328,44 @@
       "Escalate to AML team",
       "Block outgoing withdrawals",
       "Review connected cluster wallets",
-      "Monitor associated wallets for 48 hours"
+      "Monitor associated wallets for 48 hours",
+      "Prepare sanctions screening package"
     ],
     "analysis": {
       "key_findings": [
         "Mixer used to obscure 18 BTC movement",
         "Sanctioned counterparties received 14 BTC",
-        "Multiple short-lived wallets used for layering"
+        "Multiple short-lived wallets used for layering",
+        "Cross-exchange hops increased obfuscation",
+        "Cluster 1 showed coordinated splitting behavior"
       ],
       "next_steps": [
         "Freeze suspicious funds",
         "Submit SAR with supporting transaction chain",
-        "Coordinate with compliance team"
+        "Coordinate with compliance team",
+        "Open a secondary investigation for related wallet cluster",
+        "Track future deposit patterns for 72 hours"
       ]
-    }
+    },
+    "evidence": [
+      {
+        "type": "transaction",
+        "description": "18 BTC moved through mixer node MX at 09:30 AM."
+      },
+      {
+        "type": "counterparty",
+        "description": "Sanctioned wallets S1 and S2 received funds shortly after mixer outflow."
+      },
+      {
+        "type": "behavior",
+        "description": "Gateway wallets G1 and G2 split and reassembled funds across 8 additional nodes."
+      }
+    ],
+    "related_cases": [
+      "CASE-006",
+      "CASE-014",
+      "CASE-022"
+    ]
   }
 }
 

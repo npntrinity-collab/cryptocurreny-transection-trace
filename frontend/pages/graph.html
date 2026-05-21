@@ -319,6 +319,10 @@
                 <p id="walletCount">0</p>
             </div>
             <div class="summary-card">
+                <h3>Traced Wallet</h3>
+                <p id="traceWallet">—</p>
+            </div>
+            <div class="summary-card">
                 <h3>Transactions</h3>
                 <p id="txCount">0</p>
             </div>
@@ -351,17 +355,21 @@
 
         <section class="timeline">
             <h2>Transaction Timeline</h2>
-            <div class="timeline-event">
-                <h3>Awaiting trace</h3>
-                <p>Enter a wallet address and click Trace Wallet to build the network graph.</p>
+            <div id="timeline">
+                <div class="timeline-event">
+                    <h3>Awaiting trace</h3>
+                    <p>Enter a wallet address and click Trace Wallet to build the network graph.</p>
+                </div>
             </div>
         </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/graph.js"></script>
     <script src="../js/riskPanel.js"></script>
     <script src="../js/timeline.js"></script>
+    <script src="../js/market.js"></script>
     <script>
         API_BASE_URL = 'http://localhost:5000';
 
@@ -394,6 +402,7 @@
 
                 document.getElementById('totalVolume').innerText = data.summary.totalVolume || '0';
                 document.getElementById('walletCount').innerText = data.summary.wallets || '0';
+                document.getElementById('traceWallet').innerText = data.case?.input || wallet;
                 document.getElementById('txCount').innerText = data.summary.transactions || '0';
                 document.getElementById('suspiciousCount').innerText = data.summary.suspicious || '0';
 
@@ -412,9 +421,9 @@
                     flags.innerHTML = '<li><span>No flags found</span></li>';
                 }
 
-                console.log('[Graph] Rendering graph with data:', data.graph);
+                console.log('[Graph] Rendering visual with payload:', data);
                 document.getElementById('graph').innerHTML = '';
-                renderGraph(data.graph);
+                renderVisual(data);
                 if (typeof renderRisk === 'function') renderRisk(data.risk);
                 if (typeof renderTimeline === 'function') renderTimeline(data.timeline);
             } catch (err) {
@@ -422,6 +431,7 @@
                 alert('Unable to fetch trace data. Check backend and browser console.');
             }
         });
+        try { if (window.loadMarketWidget) window.loadMarketWidget(6); } catch(e) { console.warn('Market widget:', e); }
     </script>
 </body>
 

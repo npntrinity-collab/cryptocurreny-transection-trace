@@ -1,1 +1,10 @@
 # .gitignore
+__pycache__/
+*.pyc
+.venv/
+.venv-1/
+.env
+.vscode/
+node_modules/
+dist/
+build/

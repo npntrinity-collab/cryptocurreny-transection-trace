@@ -205,6 +205,14 @@
             gap: 20px;
         }
 
+        #graph {
+            width: 100%;
+            min-height: 320px;
+            border-radius: 14px;
+            background: #0b1220;
+            border: 1px solid #1e293b;
+        }
+
         .timeline-card {
             background: #111827;
             border: 1px solid #1e293b;
@@ -318,6 +326,12 @@
                     <div class="risk-chip">Darknet Links</div>
                 </div>
             </section>
+
+        <section class="panel">
+            <h2>Suspicious Wallet Network</h2>
+            <p>Visualize a representative wallet trace from the risk engine.</p>
+            <div id="graph"></div>
+        </section>
         </div>
 
         <div class="timeline">
@@ -331,6 +345,12 @@
             </div>
         </div>
     </div>
+
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/graph.js"></script>
+    <script src="../js/market.js"></script>
 
     <script>
         const API_BASE_URL = (window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
@@ -415,8 +435,23 @@
             loadRiskData();
         }
 
-        loadRiskData();
-    </script>
+        async function loadDefaultRiskGraph() {
+            try {
+                const data = await fetchTraceData('0x5B4C3D2E1F0A');
+                renderVisual(data);
+            } catch (err) {
+                console.warn('[Risk] Unable to load risk graph:', err);
+            }
+        }
+
+        async function initRiskPage() {
+            await loadRiskData();
+            await loadDefaultRiskGraph();
+            try { if (window.loadMarketWidget) await window.loadMarketWidget(6); } catch(e) { console.warn('Market widget failed:', e); }
+        }
+
+        initRiskPage();
+</script>
 </body>
 
 </html>

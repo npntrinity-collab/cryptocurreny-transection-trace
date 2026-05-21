@@ -238,6 +238,15 @@
             color: #3b82f6;
         }
 
+        #graph {
+            width: 100%;
+            min-height: 340px;
+            border-radius: 14px;
+            border: 1px solid #1e293b;
+            background: #0b1220;
+            margin-top: 18px;
+        }
+
         @media (max-width: 680px) {
             .main {
                 margin-left: 0;
@@ -260,10 +269,10 @@
 <body>
     <div class="sidebar">
         <h2>BlockForensics</h2>
-        <button class="menu-item" onclick="go('dashboard.html')">Dashboard</button>
-        <button class="menu-item" onclick="go('graph.html')">Graph Analysis</button>
-        <button class="menu-item" onclick="go('risk.html')">Risk Intelligence</button>
-        <button class="menu-item active">Cases & Reports</button>
+        <button class="menu-item" type="button" onclick="go('dashboard.html')">Dashboard</button>
+        <button class="menu-item" type="button" onclick="go('graph.html')">Graph Analysis</button>
+        <button class="menu-item" type="button" onclick="go('risk.html')">Risk Intelligence</button>
+        <button class="menu-item active" type="button">Cases & Reports</button>
     </div>
 
     <main class="main">
@@ -273,9 +282,9 @@
                 <p class="subtitle">Manage case records, track wallet investigations, and keep case data organized from
                     one place.</p>
             </div>
-            <button onclick="refreshCases()">Refresh cases</button>
+            <button type="button" onclick="refreshCases()">Refresh cases</button>
         </div>
-
+        <div id="statusMessage" class="status-banner" style="display:none; margin-bottom: 20px;"></div>
         <div class="stats">
             <div class="stat-card">
                 <h3>Total Cases</h3>
@@ -300,8 +309,14 @@
             <div class="case-form">
                 <input id="title" placeholder="Case Title" type="text">
                 <input id="wallet" placeholder="Wallet Address" type="text">
-                <button id="createBtn">Create Case</button>
+                <button id="createBtn" type="button">Create Case</button>
             </div>
+        </section>
+
+        <section class="panel">
+            <h2>Case Wallet Graph</h2>
+            <p style="color: #94a3b8; margin-bottom: 15px;">Automatically render a representative wallet trace from the top case.</p>
+            <div id="graph"></div>
         </section>
 
         <section class="panel">
@@ -312,13 +327,23 @@
         </section>
     </main>
 
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/graph.js"></script>
+    <script src="../js/market.js"></script>
+
     <script>
         const API_BASE_URL = (window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
             ? window.location.origin
             : 'http://localhost:5000';
         const CASES_ENDPOINT = '/api/cases';
+        const DEFAULT_TRACE_WALLET = '0xA1B2C3D4E5F6';
 
-        document.getElementById('createBtn').addEventListener('click', createCase);
+        const createBtn = document.getElementById('createBtn');
+        if (createBtn) {
+            createBtn.addEventListener('click', createCase);
+        }
 
         function go(page) {
             window.location.href = page;
@@ -327,7 +352,13 @@
         async function fetchJson(url, options) {
             const res = await fetch(url, options);
             if (!res.ok) {
-                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                let text;
+                try {
+                    text = await res.text();
+                } catch (err) {
+                    text = '<unable to read response body>';
+                }
+                throw new Error(`HTTP ${res.status}: ${res.statusText} - ${text}`);
             }
             return res.json();
         }
@@ -341,25 +372,56 @@
                 return;
             }
 
-            await fetchJson(`${API_BASE_URL}${CASES_ENDPOINT}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, wallet })
-            });
-
-            document.getElementById('title').value = '';
-            document.getElementById('wallet').value = '';
-            loadCases();
+            try {
+                await fetchJson(`${API_BASE_URL}${CASES_ENDPOINT}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, wallet })
+                });
+                document.getElementById('title').value = '';
+                document.getElementById('wallet').value = '';
+                showStatus('Case created successfully.');
+                await loadCases();
+            } catch (err) {
+                console.error('[Cases] createCase failed:', err);
+                showStatus(`Unable to create case: ${err.message}`, 'error');
+            }
         }
 
         async function loadCases() {
-            const data = await fetchJson(`${API_BASE_URL}${CASES_ENDPOINT}`);
-            renderCases(data);
+            try {
+                showStatus('Loading cases...');
+                const data = await fetchJson(`${API_BASE_URL}${CASES_ENDPOINT}`);
+                renderCases(data);
+                await renderCaseGraph(data?.[0]?.wallet || DEFAULT_TRACE_WALLET);
+                showStatus('');
+            } catch (err) {
+                console.error('[Cases] loadCases failed:', err);
+                showStatus(`Unable to load cases: ${err.message}`, 'error');
+            }
+        }
+
+        async function renderCaseGraph(wallet) {
+            const graphContainer = document.getElementById('graph');
+            if (!graphContainer) return;
+
+            try {
+                const data = await fetchTraceData(wallet);
+                renderVisual(data);
+            } catch (err) {
+                console.warn('[Cases] Unable to render case graph:', err);
+            }
         }
 
         async function deleteCase(id) {
-            await fetchJson(`${API_BASE_URL}${CASES_ENDPOINT}/${id}`, { method: 'DELETE' });
-            loadCases();
+            try {
+                await fetchJson(`${API_BASE_URL}${CASES_ENDPOINT}/${id}`, { method: 'DELETE' });
+                showStatus('Case deleted successfully.');
+                await loadCases();
+            } catch (err) {
+                console.error('[Cases] deleteCase failed:', err);
+                showStatus(`Unable to delete case: ${err.message}`, 'error');
+            }
         }
 
         async function editCase(caseId) {
@@ -383,31 +445,57 @@
 
             // Change actions to Save and Cancel
             actions.innerHTML = `
-                <button onclick="saveCase('${caseId}')">Save</button>
-                <button onclick="cancelEdit('${caseId}')">Cancel</button>
+                <button type="button" onclick="saveCase('${caseId}')">Save</button>
+                <button type="button" onclick="cancelEdit('${caseId}')">Cancel</button>
             `;
         }
 
         async function saveCase(caseId) {
-            const title = document.getElementById(`edit-title-${caseId}`).value.trim();
-            const wallet = document.getElementById(`edit-wallet-${caseId}`).value.trim();
+            const titleInput = document.getElementById(`edit-title-${caseId}`);
+            const walletInput = document.getElementById(`edit-wallet-${caseId}`);
+            if (!titleInput || !walletInput) {
+                showStatus('Unable to locate edit fields.', 'error');
+                return;
+            }
+
+            const title = titleInput.value.trim();
+            const wallet = walletInput.value.trim();
 
             if (!title || !wallet) {
                 alert('Please enter both title and wallet.');
                 return;
             }
 
-            await fetchJson(`${API_BASE_URL}${CASES_ENDPOINT}/${caseId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, wallet })
-            });
-
-            loadCases();
+            try {
+                await fetchJson(`${API_BASE_URL}${CASES_ENDPOINT}/${caseId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, wallet })
+                });
+                showStatus('Case updated successfully.');
+                await loadCases();
+            } catch (err) {
+                console.error('[Cases] saveCase failed:', err);
+                showStatus(`Unable to save case: ${err.message}`, 'error');
+            }
         }
 
         function cancelEdit(caseId) {
+            showStatus('Edit canceled.');
             loadCases(); // Re-render to cancel
+        }
+
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('statusMessage');
+            if (!status) return;
+            if (!message) {
+                status.style.display = 'none';
+                return;
+            }
+            status.style.display = 'block';
+            status.style.borderColor = type === 'error' ? '#dc2626' : '#3b82f6';
+            status.style.background = type === 'error' ? '#7f1d1d' : '#111827';
+            status.textContent = message;
         }
 
         function renderCases(cases) {
@@ -441,8 +529,8 @@
                         <span>Case ID: ${escapeHtml(c.case_id)}</span>
                     </div>
                     <div class="case-actions" id="actions-${c.case_id}">
-                        <button onclick="editCase('${escapeHtml(c.case_id)}')">Edit</button>
-                        <button onclick="deleteCase('${escapeHtml(c.case_id)}')">Delete</button>
+                        <button type="button" onclick="editCase('${escapeHtml(c.case_id)}')">Edit</button>
+                        <button type="button" onclick="deleteCase('${escapeHtml(c.case_id)}')">Delete</button>
                     </div>
                 `;
                 list.appendChild(card);
@@ -459,8 +547,13 @@
             });
         }
 
-        window.addEventListener('DOMContentLoaded', loadCases);
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadCases();
+            try { if (window.loadMarketWidget) await window.loadMarketWidget(6); } catch(e) { console.warn('Market widget:', e); }
+        });
     </script>
+
+    
 </body>
 
 </html>

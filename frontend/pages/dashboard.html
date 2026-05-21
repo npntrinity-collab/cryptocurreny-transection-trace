@@ -115,6 +115,14 @@
             color: #3b82f6;
         }
 
+        #graph {
+            width: 100%;
+            min-height: 360px;
+            border-radius: 14px;
+            background: #0b1220;
+            border: 1px solid #1e293b;
+        }
+
         .loading,
         .error {
             padding: 20px;
@@ -226,6 +234,18 @@
                     <p id="wallets">-</p>
                 </div>
             </div>
+
+            <section class="panel" style="margin-top: 30px;">
+                <h2>Wallet Trace Snapshot</h2>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Visualize a sample wallet trace for trending activity.</p>
+                <div id="graph"></div>
+            </section>
+
+            <section class="panel" style="margin-top:16px;">
+                <h2>Market Snapshot</h2>
+                <p style="color: #94a3b8; margin-bottom: 12px;">Top cryptocurrencies by market cap (from local CSV).</p>
+                <div id="marketWidget" style="min-height:220px;"></div>
+            </section>
         </div>
 
         <div id="status" class="loading" style="display: none;">
@@ -233,6 +253,12 @@
             <p>Loading dashboard data...</p>
         </div>
     </main>
+
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/graph.js"></script>
+    <script src="../js/market.js"></script>
 
     <script>
         // Configuration
@@ -296,8 +322,7 @@
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                    },
-                    credentials: 'include'
+                    }
                 });
 
                 // Check if response is successful
@@ -366,6 +391,15 @@
             statusDiv.style.display = 'block';
         }
 
+        async function loadDefaultGraph() {
+            try {
+                const data = await fetchTraceData('0xA1B2C3D4E5F6');
+                renderVisual(data);
+            } catch (err) {
+                console.warn('[Dashboard] Unable to load default graph:', err);
+            }
+        }
+
         // Run on page load
         window.addEventListener('DOMContentLoaded', async function () {
             console.log('[Dashboard] 🔍 Checking backend health...');
@@ -373,7 +407,9 @@
 
             if (isHealthy) {
                 console.log('[Dashboard] ✅ Backend is healthy, loading dashboard...');
-                loadDashboard();
+                await loadDashboard();
+                await loadDefaultGraph();
+                try { if (window.loadMarketWidget) await window.loadMarketWidget(6); } catch(e) { console.warn('Market widget failed:', e); }
             } else {
                 console.log('[Dashboard] ❌ Backend is not responding, will retry...');
                 showError(
@@ -386,11 +422,15 @@
                     `<small style="color: #94a3b8;">4. Check browser console (F12) for more details</small>`
                 );
                 // Still try loading after error display
-                setTimeout(() => loadDashboard(), 2000);
+                setTimeout(async () => {
+                    await loadDashboard();
+                    await loadDefaultGraph();
+                }, 2000);
             }
         });
     </script>
 
+    
 </body>
 
 </html>
